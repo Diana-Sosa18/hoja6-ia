@@ -1,0 +1,28 @@
+{
+  "name": "hoja6-ia-agente",
+  "version": "1.0.0",
+  "description": "Agente de servicio al cliente con evals usando promptfoo",
+  "main": "agent.js",
+  "type": "module",
+  "scripts": {
+    "start": "node agent.js",
+    "test": "promptfoo eval -c promptfooconfig.yaml",
+    "view": "promptfoo view"
+  },
+  "keywords": [
+    "ia",
+    "agente",
+    "anthropic",
+    "promptfoo",
+    "evals"
+  ],
+  "author": "Diana",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.28.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "promptfoo": "^0.77.0"
+  }
+}

@@ -1,0 +1,103 @@
+description: "Evaluación de agente de servicio al cliente - Agendar citas y FAQs"
+
+providers:
+  - id: exec
+    config:
+      command: node
+      args:
+        - -e
+        - |
+          import { runAgent } from './agent.js';
+          const prompt = process.argv[1];
+          const result = await runAgent(prompt);
+          console.log(JSON.stringify({ output: result }));
+      raw: true
+
+tests:
+  # Pruebas de factuality para FAQs
+  - description: "FAQ - Horario de atención"
+    vars:
+      prompt: "¿Cuál es el horario de atención?"
+    assert:
+      - type: contains
+        value: "9:00 AM"
+
+  - description: "FAQ - Costo de consulta"
+    vars:
+      prompt: "¿Cuál es el costo de la consulta?"
+    assert:
+      - type: contains
+        value: "Q250"
+
+  - description: "FAQ - Consultas virtuales"
+    vars:
+      prompt: "¿Se ofrecen consultas virtuales?"
+    assert:
+      - type: contains
+        value: "Sí"
+
+  - description: "FAQ - Política de cancelación"
+    vars:
+      prompt: "¿Cuál es la política de cancelación?"
+    assert:
+      - type: contains
+        value: "24 horas"
+
+  # Pruebas determinísticas para agendar citas
+  - description: "Agendar cita - Verificar confirmación"
+    vars:
+      prompt: "Quiero agendar una cita para el 2024-10-15 a las 14:30, mi nombre es Carlos García y mi email es carlos@example.com"
+    assert:
+      - type: regex
+        value: "(APT_|exitosamente|agendada)"
+
+  - description: "Agendar cita - Capturar todos los datos"
+    vars:
+      prompt: "Por favor agenda una cita a nombre de María López para el 2024-11-20 a las 10:00, correo maria@example.com"
+    assert:
+      - type: contains
+        value: "cita"
+
+  - description: "Agendar cita - Respuesta con ID"
+    vars:
+      prompt: "Necesito agendar cita el 2024-12-01 a las 15:45, soy Ana Martínez, ana@example.com"
+    assert:
+      - type: regex
+        value: "APT_"
+
+  # Pruebas de latencia (timeout si demora mucho)
+  - description: "Latencia - Respuesta rápida a FAQ"
+    vars:
+      prompt: "¿Cuál es tu horario?"
+    assert:
+      - type: latency
+        value: 5000
+
+  - description: "Latencia - Procesamiento rápido de cita"
+    vars:
+      prompt: "Quiero agendar para el 2024-10-25 a las 16:00, soy Roberto Díaz, roberto@example.com"
+    assert:
+      - type: latency
+        value: 5000
+
+  # Pruebas de edge cases
+  - description: "Edge case - Pregunta no en FAQs"
+    vars:
+      prompt: "¿Cuál es el nombre del CEO?"
+    assert:
+      - type: contains
+        value: "no encontrada"
+
+  - description: "Edge case - Formato de fecha incorrecto"
+    vars:
+      prompt: "Agendar cita para mañana a las 3pm, soy Juan, juan@test.com"
+    assert:
+      - type: contains
+        value: "cita"
+
+  - description: "Multiturn - Agendar y luego consultar"
+    vars:
+      prompt: "Primero quiero saber ¿cuál es el horario?, y después agendar una cita para el 2024-10-30 a las 13:00, soy Sofia López, sofia@example.com"
+    assert:
+      - type: contains
+        value: "9:00 AM"
