@@ -1,17 +1,9 @@
 description: "Evaluación de agente de servicio al cliente - Agendar citas y FAQs"
 
 providers:
-  - id: exec
+  - id: custom
     config:
-      command: node
-      args:
-        - -e
-        - |
-          import { runAgent } from './agent.js';
-          const prompt = process.argv[1];
-          const result = await runAgent(prompt);
-          console.log(JSON.stringify({ output: result }));
-      raw: true
+      script: test-provider.js
 
 tests:
   # Pruebas de factuality para FAQs
