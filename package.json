@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node agent.js",
-    "test": "promptfoo eval -c promptfooconfig.yaml",
+    "test": "node run-evals.js",
+    "eval-promptfoo": "promptfoo eval -c promptfooconfig.yaml",
     "view": "promptfoo view"
   },
   "keywords": [
