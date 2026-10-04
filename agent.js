@@ -1,12 +1,12 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import { pathToFileURL } from "node:url";
 
 dotenv.config();
 
-const MODEL = process.env.AGENT_MODEL || "claude-haiku-4-5-20251001";
+const MODEL = process.env.AGENT_MODEL || "gemini-3.5-flash-lite";
 
-const client = new Anthropic();
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
 const citas = {};
 
@@ -14,27 +14,33 @@ const faqs = [
   {
     pregunta: "¿Cuál es el horario de atención?",
     respuesta: "Atendemos de lunes a viernes de 9:00 a 18:00.",
+    claves: "horario horarios abren cierran atienden atencion",
   },
   {
     pregunta: "¿Cuál es el costo de la consulta?",
     respuesta: "El costo de la consulta es de Q250 por sesión.",
+    claves: "costo cuesta precio valor tarifa",
   },
   {
     pregunta: "¿Ofrecen consultas virtuales?",
     respuesta: "Sí, ofrecemos consultas presenciales y virtuales por videollamada.",
+    claves: "virtual virtuales videollamada linea remota remoto zoom meet distancia",
   },
   {
     pregunta: "¿Cuál es la política de cancelación?",
     respuesta:
       "Las citas se pueden cancelar sin costo con al menos 24 horas de anticipación. Cancelaciones con menos tiempo tienen un cargo de Q100.",
+    claves: "cancelar cancelo cancelacion cancelaciones anular reprogramar",
   },
   {
     pregunta: "¿Dónde están ubicados?",
     respuesta: "Estamos en 5a. Avenida 10-50, Zona 10, Ciudad de Guatemala.",
+    claves: "ubicados ubicacion direccion oficinas oficina quedan encuentran llegar",
   },
   {
     pregunta: "¿Qué formas de pago aceptan?",
     respuesta: "Aceptamos efectivo, tarjeta de crédito o débito y transferencia bancaria.",
+    claves: "pago pagar pagos tarjeta efectivo transferencia",
   },
 ];
 
@@ -58,9 +64,13 @@ function buscarFaq({ pregunta }) {
   let mejor = null;
   let mejorPuntaje = 0;
   for (const faq of faqs) {
-    const puntaje = normalizar(`${faq.pregunta} ${faq.respuesta}`).filter((p) =>
-      palabras.has(p)
-    ).length;
+    const texto = new Set(normalizar(`${faq.pregunta} ${faq.respuesta}`));
+    const claves = new Set(normalizar(faq.claves));
+    let puntaje = 0;
+    for (const p of palabras) {
+      if (claves.has(p)) puntaje += 2;
+      else if (texto.has(p)) puntaje += 1;
+    }
     if (puntaje > mejorPuntaje) {
       mejor = faq;
       mejorPuntaje = puntaje;
@@ -69,7 +79,7 @@ function buscarFaq({ pregunta }) {
   if (!mejor) {
     return { encontrada: false, mensaje: "La pregunta no está en la base de preguntas frecuentes." };
   }
-  return { encontrada: true, ...mejor };
+  return { encontrada: true, pregunta: mejor.pregunta, respuesta: mejor.respuesta };
 }
 
 function agendarCita({ nombre, fecha, hora, correo }) {
@@ -114,7 +124,7 @@ const tools = [
     name: "buscar_faq",
     description:
       "Busca la respuesta oficial a una pregunta frecuente (horario, costo, consultas virtuales, cancelación, ubicación, formas de pago).",
-    input_schema: {
+    parametersJsonSchema: {
       type: "object",
       properties: {
         pregunta: { type: "string", description: "Pregunta del cliente" },
@@ -125,7 +135,7 @@ const tools = [
   {
     name: "agendar_cita",
     description: "Agenda una cita. Solo se llama cuando se tienen nombre, fecha, hora y correo.",
-    input_schema: {
+    parametersJsonSchema: {
       type: "object",
       properties: {
         nombre: { type: "string", description: "Nombre completo del cliente" },
@@ -139,7 +149,7 @@ const tools = [
   {
     name: "consultar_cita",
     description: "Consulta los datos de una cita existente por su identificador.",
-    input_schema: {
+    parametersJsonSchema: {
       type: "object",
       properties: {
         id_cita: { type: "string", description: "Identificador de la cita, por ejemplo APT_0001" },
@@ -162,47 +172,57 @@ Citas:
 - Al confirmar una cita, incluye el identificador (por ejemplo APT_0001), la fecha y la hora.
 - Si la herramienta devuelve un error, explica el motivo al cliente.`;
 
+const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// El nivel gratuito de Gemini limita solicitudes por minuto; se reintenta ante 429/503.
+async function generar(contents) {
+  for (let intento = 1; ; intento++) {
+    try {
+      return await ai.models.generateContent({
+        model: MODEL,
+        contents,
+        config: {
+          systemInstruction: SYSTEM_PROMPT,
+          tools: [{ functionDeclarations: tools }],
+        },
+      });
+    } catch (error) {
+      if (intento >= 5 || ![429, 503].includes(error.status)) throw error;
+      await esperar(15000 * intento);
+    }
+  }
+}
+
 export async function runAgent(mensaje) {
-  const messages = [{ role: "user", content: mensaje }];
+  const contents = [{ role: "user", parts: [{ text: mensaje }] }];
   const herramientas = [];
 
   for (let turno = 0; turno < 6; turno++) {
-    const response = await client.messages.create({
-      model: MODEL,
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      tools,
-      messages,
-    });
+    const response = await generar(contents);
+    const llamadas = response.functionCalls || [];
 
-    if (response.stop_reason !== "tool_use") {
-      const respuesta = response.content
-        .filter((b) => b.type === "text")
-        .map((b) => b.text)
-        .join("\n");
-      return { respuesta, herramientas };
+    if (llamadas.length === 0) {
+      return { respuesta: response.text || "", herramientas };
     }
 
-    messages.push({ role: "assistant", content: response.content });
+    contents.push(response.candidates[0].content);
     const resultados = [];
-    for (const bloque of response.content) {
-      if (bloque.type !== "tool_use") continue;
-      const fn = implementaciones[bloque.name];
-      const resultado = fn ? fn(bloque.input) : { error: `Herramienta desconocida: ${bloque.name}` };
-      herramientas.push({ nombre: bloque.name, argumentos: bloque.input, resultado });
+    for (const llamada of llamadas) {
+      const fn = implementaciones[llamada.name];
+      const argumentos = llamada.args || {};
+      const resultado = fn ? fn(argumentos) : { error: `Herramienta desconocida: ${llamada.name}` };
+      herramientas.push({ nombre: llamada.name, argumentos, resultado });
       resultados.push({
-        type: "tool_result",
-        tool_use_id: bloque.id,
-        content: JSON.stringify(resultado),
+        functionResponse: { id: llamada.id, name: llamada.name, response: resultado },
       });
     }
-    messages.push({ role: "user", content: resultados });
+    contents.push({ role: "user", parts: resultados });
   }
 
   return { respuesta: "No se pudo completar la solicitud.", herramientas };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const mensaje = process.argv.slice(2).join(" ") || "¿Cuál es el horario de atención?";
   const { respuesta, herramientas } = await runAgent(mensaje);
   console.log(respuesta);

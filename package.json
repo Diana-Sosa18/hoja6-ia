@@ -6,12 +6,12 @@
   "main": "agent.js",
   "scripts": {
     "agente": "node agent.js",
-    "eval": "promptfoo eval --no-cache -o reporte/reporte-promptfoo.html -o reporte/reporte-promptfoo.json",
+    "eval": "promptfoo eval --no-cache -j 1 --delay 4000 -o reporte/reporte-promptfoo.html -o reporte/reporte-promptfoo.json",
     "view": "promptfoo view"
   },
   "license": "MIT",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.131.0",
+    "@google/genai": "^2.27.0",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {

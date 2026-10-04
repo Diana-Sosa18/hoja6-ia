@@ -1,0 +1,2438 @@
+{
+  "evalId": "eval-qWN-2026-10-04T01:09:28",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-10-04T01:09:28.408Z",
+    "prompts": [
+      {
+        "id": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "raw": "{{mensaje}}",
+        "label": "{{mensaje}}",
+        "provider": "agente-parachute",
+        "metrics": {
+          "score": 12,
+          "testPassCount": 12,
+          "testFailCount": 0,
+          "testErrorCount": 0,
+          "assertPassCount": 37,
+          "assertFailCount": 0,
+          "totalLatencyMs": 42682,
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 12,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 2751,
+              "prompt": 2218,
+              "completion": 533,
+              "cached": 0,
+              "numRequests": 7,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "namedScoreWeights": {},
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 443,
+            "prompt": 347,
+            "completion": 96,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "Atienden de lunes a viernes de 9:00 a 18:00."
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "The submitted answer conveys the exact same factual information as the expert answer (Monday to Friday, 9:00 to 18:00). The only difference is the grammatical person (third-person plural 'Atienden' vs. first-person plural 'Atendemos'), which does not affect the factual accuracy in the context of answering the question.",
+              "tokensUsed": {
+                "total": 443,
+                "prompt": 347,
+                "completion": 96,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "regex",
+                "value": "9(:00)?\\s*(a\\.?\\s*m\\.?|am|hrs?)?\\s*(a|-|hasta)\\s*(18(:00)?|6(:00)?\\s*(p\\.?\\s*m\\.?|pm))"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 10000
+              }
+            }
+          ]
+        },
+        "id": "2a67e544-a089-4713-8023-0048c4d7fbe3",
+        "latencyMs": 2632,
+        "namedScores": {},
+        "prompt": {
+          "raw": "¿Cuál es el horario de atención?",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "Atendemos de lunes a viernes de 9:00 a 18:00.",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "buscar_faq",
+                "argumentos": {
+                  "pregunta": "¿Cuál es el horario de atención?"
+                },
+                "resultado": {
+                  "encontrada": true,
+                  "pregunta": "¿Cuál es el horario de atención?",
+                  "respuesta": "Atendemos de lunes a viernes de 9:00 a 18:00."
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "FAQ | Horario de atención",
+          "vars": {
+            "mensaje": "¿Cuál es el horario de atención?"
+          },
+          "assert": [
+            {
+              "type": "factuality",
+              "value": "Atienden de lunes a viernes de 9:00 a 18:00."
+            },
+            {
+              "type": "regex",
+              "value": "9(:00)?\\s*(a\\.?\\s*m\\.?|am|hrs?)?\\s*(a|-|hasta)\\s*(18(:00)?|6(:00)?\\s*(p\\.?\\s*m\\.?|pm))"
+            },
+            {
+              "type": "javascript",
+              "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+            },
+            {
+              "type": "latency",
+              "threshold": 10000
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 443,
+            "prompt": 347,
+            "completion": 96,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "¿Cuál es el horario de atención?"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "buscar_faq",
+              "argumentos": {
+                "pregunta": "¿Cuál es el horario de atención?"
+              },
+              "resultado": {
+                "encontrada": true,
+                "pregunta": "¿Cuál es el horario de atención?",
+                "respuesta": "Atendemos de lunes a viernes de 9:00 a 18:00."
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 384,
+            "prompt": 327,
+            "completion": 57,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "La consulta cuesta Q250 por sesión."
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "The submitted answer conveys the exact same factual information as the expert answer (that the consultation costs Q250 per session), using only a slight variation in phrasing without any addition or omission of facts.",
+              "tokensUsed": {
+                "total": 384,
+                "prompt": 327,
+                "completion": 57,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "contains",
+                "value": "Q250"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 10000
+              }
+            }
+          ]
+        },
+        "id": "0e0b5598-c0f0-448c-ace4-1c901338a5eb",
+        "latencyMs": 1556,
+        "namedScores": {},
+        "prompt": {
+          "raw": "¿Cuánto cuesta una consulta?",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "El costo de la consulta es de Q250 por sesión.",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "buscar_faq",
+                "argumentos": {
+                  "pregunta": "costo de una consulta"
+                },
+                "resultado": {
+                  "encontrada": true,
+                  "pregunta": "¿Cuál es el costo de la consulta?",
+                  "respuesta": "El costo de la consulta es de Q250 por sesión."
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "FAQ | Costo de la consulta",
+          "vars": {
+            "mensaje": "¿Cuánto cuesta una consulta?"
+          },
+          "assert": [
+            {
+              "type": "factuality",
+              "value": "La consulta cuesta Q250 por sesión."
+            },
+            {
+              "type": "contains",
+              "value": "Q250"
+            },
+            {
+              "type": "javascript",
+              "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+            },
+            {
+              "type": "latency",
+              "threshold": 10000
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 1,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 384,
+            "prompt": 327,
+            "completion": 57,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "¿Cuánto cuesta una consulta?"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "buscar_faq",
+              "argumentos": {
+                "pregunta": "costo de una consulta"
+              },
+              "resultado": {
+                "encontrada": true,
+                "pregunta": "¿Cuál es el costo de la consulta?",
+                "respuesta": "El costo de la consulta es de Q250 por sesión."
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 437,
+            "prompt": 338,
+            "completion": 99,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "Sí, ofrecen consultas virtuales por videollamada además de presenciales."
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "The expert answer states that virtual consultations via video call are offered in addition to in-person ones. The submitted answer conveys the exact same factual information ('ofrecemos consultas presenciales y virtuales por videollamada'), simply shifting the grammatical perspective from third-person ('ofrecen') to first-person plural ('ofrecemos'). This difference in perspective does not affect factuality.",
+              "tokensUsed": {
+                "total": 437,
+                "prompt": 338,
+                "completion": 99,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+              }
+            }
+          ]
+        },
+        "id": "0e64d8a4-bd6a-40cf-8f66-407ee6c876df",
+        "latencyMs": 1930,
+        "namedScores": {},
+        "prompt": {
+          "raw": "¿Puedo tener la consulta por videollamada?",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "Sí, ofrecemos consultas presenciales y virtuales por videollamada.",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "buscar_faq",
+                "argumentos": {
+                  "pregunta": "consultas virtuales"
+                },
+                "resultado": {
+                  "encontrada": true,
+                  "pregunta": "¿Ofrecen consultas virtuales?",
+                  "respuesta": "Sí, ofrecemos consultas presenciales y virtuales por videollamada."
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "FAQ | Consultas virtuales",
+          "vars": {
+            "mensaje": "¿Puedo tener la consulta por videollamada?"
+          },
+          "assert": [
+            {
+              "type": "factuality",
+              "value": "Sí, ofrecen consultas virtuales por videollamada además de presenciales."
+            },
+            {
+              "type": "javascript",
+              "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 2,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 437,
+            "prompt": 338,
+            "completion": 99,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "¿Puedo tener la consulta por videollamada?"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "buscar_faq",
+              "argumentos": {
+                "pregunta": "consultas virtuales"
+              },
+              "resultado": {
+                "encontrada": true,
+                "pregunta": "¿Ofrecen consultas virtuales?",
+                "respuesta": "Sí, ofrecemos consultas presenciales y virtuales por videollamada."
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 433,
+            "prompt": 367,
+            "completion": 66,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "Cancelar con al menos 24 horas de anticipación no tiene costo; con menos tiempo hay un cargo de Q100."
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "The submitted answer contains all the exact same factual details as the expert answer (free cancellation with at least 24 hours notice, and a Q100 fee for cancellations with less time), merely expressed with slightly different wording or sentence structure.",
+              "tokensUsed": {
+                "total": 433,
+                "prompt": 367,
+                "completion": 66,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "contains-all",
+                "value": [
+                  "24 horas",
+                  "Q100"
+                ]
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+              }
+            }
+          ]
+        },
+        "id": "ca12a2c3-149e-471b-8aa9-e1bd849599b0",
+        "latencyMs": 2179,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Si cancelo mi cita, ¿me cobran algo?",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "Las citas se pueden cancelar sin costo con al menos 24 horas de anticipación. Cancelaciones con menos tiempo tienen un cargo de Q100.",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "buscar_faq",
+                "argumentos": {
+                  "pregunta": "Si cancelo mi cita, ¿me cobran algo?"
+                },
+                "resultado": {
+                  "encontrada": true,
+                  "pregunta": "¿Cuál es la política de cancelación?",
+                  "respuesta": "Las citas se pueden cancelar sin costo con al menos 24 horas de anticipación. Cancelaciones con menos tiempo tienen un cargo de Q100."
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "FAQ | Política de cancelación",
+          "vars": {
+            "mensaje": "Si cancelo mi cita, ¿me cobran algo?"
+          },
+          "assert": [
+            {
+              "type": "factuality",
+              "value": "Cancelar con al menos 24 horas de anticipación no tiene costo; con menos tiempo hay un cargo de Q100."
+            },
+            {
+              "type": "contains-all",
+              "value": [
+                "24 horas",
+                "Q100"
+              ]
+            },
+            {
+              "type": "javascript",
+              "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 3,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 433,
+            "prompt": 367,
+            "completion": 66,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "Si cancelo mi cita, ¿me cobran algo?"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "buscar_faq",
+              "argumentos": {
+                "pregunta": "Si cancelo mi cita, ¿me cobran algo?"
+              },
+              "resultado": {
+                "encontrada": true,
+                "pregunta": "¿Cuál es la política de cancelación?",
+                "respuesta": "Las citas se pueden cancelar sin costo con al menos 24 horas de anticipación. Cancelaciones con menos tiempo tienen un cargo de Q100."
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 429,
+            "prompt": 350,
+            "completion": 79,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "Están en 5a. Avenida 10-50, Zona 10, Ciudad de Guatemala."
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "The submitted answer conveys the exact same factual location (5a. Avenida 10-50, Zona 10, Ciudad de Guatemala) as the expert answer. The only difference is the grammatical person (\"Estamos\" vs \"Están\"), which does not affect the factual accuracy regarding the location.",
+              "tokensUsed": {
+                "total": 429,
+                "prompt": 350,
+                "completion": 79,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "icontains",
+                "value": "zona 10"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 10000
+              }
+            }
+          ]
+        },
+        "id": "06b7a73e-62f5-4b6e-bace-9427df6223df",
+        "latencyMs": 2580,
+        "namedScores": {},
+        "prompt": {
+          "raw": "¿Dónde quedan sus oficinas?",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "Estamos en 5a. Avenida 10-50, Zona 10, Ciudad de Guatemala.",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "buscar_faq",
+                "argumentos": {
+                  "pregunta": "¿Dónde quedan sus oficinas?"
+                },
+                "resultado": {
+                  "encontrada": true,
+                  "pregunta": "¿Dónde están ubicados?",
+                  "respuesta": "Estamos en 5a. Avenida 10-50, Zona 10, Ciudad de Guatemala."
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "FAQ | Ubicación",
+          "vars": {
+            "mensaje": "¿Dónde quedan sus oficinas?"
+          },
+          "assert": [
+            {
+              "type": "factuality",
+              "value": "Están en 5a. Avenida 10-50, Zona 10, Ciudad de Guatemala."
+            },
+            {
+              "type": "icontains",
+              "value": "zona 10"
+            },
+            {
+              "type": "latency",
+              "threshold": 10000
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 4,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 429,
+            "prompt": 350,
+            "completion": 79,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "¿Dónde quedan sus oficinas?"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "buscar_faq",
+              "argumentos": {
+                "pregunta": "¿Dónde quedan sus oficinas?"
+              },
+              "resultado": {
+                "encontrada": true,
+                "pregunta": "¿Dónde están ubicados?",
+                "respuesta": "Estamos en 5a. Avenida 10-50, Zona 10, Ciudad de Guatemala."
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "icontains",
+                "value": "No cuento con esa información"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "!(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'agendar_cita')"
+              }
+            }
+          ]
+        },
+        "id": "bc212af4-b4dd-433f-a8cd-f8a23961b2a4",
+        "latencyMs": 2221,
+        "namedScores": {},
+        "prompt": {
+          "raw": "¿Cómo se llama el gerente general de la empresa?",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "No cuento con esa información. Si lo deseas, puedo ayudarte a agendar una cita.",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "buscar_faq",
+                "argumentos": {
+                  "pregunta": "¿Cómo se llama el gerente general de la empresa?"
+                },
+                "resultado": {
+                  "encontrada": false,
+                  "mensaje": "La pregunta no está en la base de preguntas frecuentes."
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "FAQ | Pregunta fuera de la base (no debe inventar)",
+          "vars": {
+            "mensaje": "¿Cómo se llama el gerente general de la empresa?"
+          },
+          "assert": [
+            {
+              "type": "icontains",
+              "value": "No cuento con esa información"
+            },
+            {
+              "type": "javascript",
+              "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+            },
+            {
+              "type": "javascript",
+              "value": "!(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'agendar_cita')"
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 5,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "¿Cómo se llama el gerente general de la empresa?"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "buscar_faq",
+              "argumentos": {
+                "pregunta": "¿Cómo se llama el gerente general de la empresa?"
+              },
+              "resultado": {
+                "encontrada": false,
+                "mensaje": "La pregunta no está en la base de preguntas frecuentes."
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "regex",
+                "value": "APT_\\d{4}"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Argumentos: {\"nombre\":\"Carlos García\",\"hora\":\"14:30\",\"fecha\":\"2026-11-16\",\"correo\":\"carlos@example.com\"}",
+              "assertion": {
+                "type": "javascript",
+                "value": "const h = (context.providerResponse?.metadata?.herramientas || []).filter(t => t.nombre === 'agendar_cita');\nif (h.length !== 1) return { pass: false, score: 0, reason: `Se esperaba 1 llamada a agendar_cita y hubo ${h.length}` };\nconst a = h[0].argumentos;\nconst ok = a.fecha === '2026-11-16' && a.hora === '14:30' && a.correo === 'carlos@example.com' && /carlos garc[ií]a/i.test(a.nombre);\nreturn { pass: ok, score: ok ? 1 : 0, reason: `Argumentos: ${JSON.stringify(a)}` };\n"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'agendar_cita' && h.resultado.exito)"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 15000
+              }
+            }
+          ]
+        },
+        "id": "93aa5468-8035-4f29-94c8-d15a62dcb053",
+        "latencyMs": 2657,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Quiero agendar una cita el 2026-11-16 a las 14:30. Me llamo Carlos García y mi correo es carlos@example.com",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "Tu cita ha sido agendada con éxito. \n\n**Detalles de la cita:**\n- **Identificador:** APT_0001\n- **Nombre:** Carlos García\n- **Fecha:** 2026-11-16\n- **Hora:** 14:30",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "agendar_cita",
+                "argumentos": {
+                  "nombre": "Carlos García",
+                  "hora": "14:30",
+                  "fecha": "2026-11-16",
+                  "correo": "carlos@example.com"
+                },
+                "resultado": {
+                  "exito": true,
+                  "id_cita": "APT_0001",
+                  "nombre": "Carlos García",
+                  "fecha": "2026-11-16",
+                  "hora": "14:30",
+                  "correo": "carlos@example.com"
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Cita | Datos completos",
+          "vars": {
+            "mensaje": "Quiero agendar una cita el 2026-11-16 a las 14:30. Me llamo Carlos García y mi correo es carlos@example.com"
+          },
+          "assert": [
+            {
+              "type": "regex",
+              "value": "APT_\\d{4}"
+            },
+            {
+              "type": "javascript",
+              "value": "const h = (context.providerResponse?.metadata?.herramientas || []).filter(t => t.nombre === 'agendar_cita');\nif (h.length !== 1) return { pass: false, score: 0, reason: `Se esperaba 1 llamada a agendar_cita y hubo ${h.length}` };\nconst a = h[0].argumentos;\nconst ok = a.fecha === '2026-11-16' && a.hora === '14:30' && a.correo === 'carlos@example.com' && /carlos garc[ií]a/i.test(a.nombre);\nreturn { pass: ok, score: ok ? 1 : 0, reason: `Argumentos: ${JSON.stringify(a)}` };\n"
+            },
+            {
+              "type": "javascript",
+              "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'agendar_cita' && h.resultado.exito)"
+            },
+            {
+              "type": "latency",
+              "threshold": 15000
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 6,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "Quiero agendar una cita el 2026-11-16 a las 14:30. Me llamo Carlos García y mi correo es carlos@example.com"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "agendar_cita",
+              "argumentos": {
+                "nombre": "Carlos García",
+                "hora": "14:30",
+                "fecha": "2026-11-16",
+                "correo": "carlos@example.com"
+              },
+              "resultado": {
+                "exito": true,
+                "id_cita": "APT_0001",
+                "nombre": "Carlos García",
+                "fecha": "2026-11-16",
+                "hora": "14:30",
+                "correo": "carlos@example.com"
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "regex",
+                "value": "APT_\\d{4}"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "fecha=2026-11-18 hora=10:00",
+              "assertion": {
+                "type": "javascript",
+                "value": "const h = (context.providerResponse?.metadata?.herramientas || []).find(t => t.nombre === 'agendar_cita');\nif (!h) return { pass: false, score: 0, reason: 'No se llamó agendar_cita' };\nconst ok = h.argumentos.fecha === '2026-11-18' && h.argumentos.hora === '10:00';\nreturn { pass: ok, score: ok ? 1 : 0, reason: `fecha=${h.argumentos.fecha} hora=${h.argumentos.hora}` };\n"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 15000
+              }
+            }
+          ]
+        },
+        "id": "588c8da4-eca8-479c-a837-9ec1595a670d",
+        "latencyMs": 1625,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Agéndame para el miércoles 18 de noviembre de 2026 a las 10 de la mañana. Soy María López, maria@example.com",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "¡Tu cita ha sido agendada con éxito! \n\n- **Identificador:** APT_0002\n- **Fecha:** 2026-11-18\n- **Hora:** 10:00",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "agendar_cita",
+                "argumentos": {
+                  "nombre": "María López",
+                  "hora": "10:00",
+                  "fecha": "2026-11-18",
+                  "correo": "maria@example.com"
+                },
+                "resultado": {
+                  "exito": true,
+                  "id_cita": "APT_0002",
+                  "nombre": "María López",
+                  "fecha": "2026-11-18",
+                  "hora": "10:00",
+                  "correo": "maria@example.com"
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Cita | Fecha y hora en lenguaje natural",
+          "vars": {
+            "mensaje": "Agéndame para el miércoles 18 de noviembre de 2026 a las 10 de la mañana. Soy María López, maria@example.com"
+          },
+          "assert": [
+            {
+              "type": "regex",
+              "value": "APT_\\d{4}"
+            },
+            {
+              "type": "javascript",
+              "value": "const h = (context.providerResponse?.metadata?.herramientas || []).find(t => t.nombre === 'agendar_cita');\nif (!h) return { pass: false, score: 0, reason: 'No se llamó agendar_cita' };\nconst ok = h.argumentos.fecha === '2026-11-18' && h.argumentos.hora === '10:00';\nreturn { pass: ok, score: ok ? 1 : 0, reason: `fecha=${h.argumentos.fecha} hora=${h.argumentos.hora}` };\n"
+            },
+            {
+              "type": "latency",
+              "threshold": 15000
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 7,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "Agéndame para el miércoles 18 de noviembre de 2026 a las 10 de la mañana. Soy María López, maria@example.com"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "agendar_cita",
+              "argumentos": {
+                "nombre": "María López",
+                "hora": "10:00",
+                "fecha": "2026-11-18",
+                "correo": "maria@example.com"
+              },
+              "resultado": {
+                "exito": true,
+                "id_cita": "APT_0002",
+                "nombre": "María López",
+                "fecha": "2026-11-18",
+                "hora": "10:00",
+                "correo": "maria@example.com"
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "not-regex",
+                "value": "APT_\\d{4}"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "regex",
+                "value": "[Cc]orreo|[Ee]-?mail"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "!(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'agendar_cita')"
+              }
+            }
+          ]
+        },
+        "id": "7cf7a0f8-b7cf-4126-92b1-b1f5826ee214",
+        "latencyMs": 1551,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Quiero una cita el 2026-11-20 a las 11:00, me llamo Pedro Ruiz",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "Hola Pedro, para poder agendar tu cita, ¿podrías proporcionarme tu correo electrónico por favor?",
+          "metadata": {
+            "herramientas": []
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Cita | Falta el correo (no debe agendar)",
+          "vars": {
+            "mensaje": "Quiero una cita el 2026-11-20 a las 11:00, me llamo Pedro Ruiz"
+          },
+          "assert": [
+            {
+              "type": "not-regex",
+              "value": "APT_\\d{4}"
+            },
+            {
+              "type": "regex",
+              "value": "[Cc]orreo|[Ee]-?mail"
+            },
+            {
+              "type": "javascript",
+              "value": "!(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'agendar_cita')"
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 8,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "Quiero una cita el 2026-11-20 a las 11:00, me llamo Pedro Ruiz"
+        },
+        "metadata": {
+          "herramientas": [],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 303,
+            "prompt": 247,
+            "completion": 56,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "not-regex",
+                "value": "APT_\\d{4}"
+              }
+            },
+            {
+              "assertion": {
+                "type": "llm-rubric",
+                "value": "Explica que no se puede agendar porque solo se atiende de lunes a viernes, sin confirmar ninguna cita."
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "El texto explica claramente que no se pudo agendar porque solo se atiende de lunes a viernes, indica que la fecha elegida es sábado y no confirma ninguna cita.",
+              "tokensUsed": {
+                "total": 303,
+                "prompt": 247,
+                "completion": 56,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              },
+              "metadata": {
+                "thoughtSignatures": [
+                  "EmAKXgFpFH0TmQViJbo573ybNTB58EF3/t5AbJ6HQr+xAZGEwk27U3QU1FqobJ6/WOTU9pkkVQtzRBI6SjmRHGVOY7lWWlxW+HLLOEksH3m7Kq1fzEd/vDHik5NOCS/hgiA="
+                ],
+                "serviceTier": "standard",
+                "renderedGradingPrompt": "[{\"role\":\"system\",\"content\":\"You are grading output according to a user-specified rubric. If the statement in the rubric is true, then the output passes the test. You respond with a JSON object with this structure: {reason: string, pass: boolean, score: number}\\n\\nExamples:\\n\\n<Output>Hello world</Output>\\n<Rubric>Content contains a greeting</Rubric>\\n{\\\"reason\\\": \\\"the content contains the word 'Hello'\\\", \\\"pass\\\": true, \\\"score\\\": 1.0}\\n\\n<Output>Avast ye swabs, repel the invaders!</Output>\\n<Rubric>Does not speak like a pirate</Rubric>\\n{\\\"reason\\\": \\\"'avast ye' is a common pirate term\\\", \\\"pass\\\": false, \\\"score\\\": 0.0}\"},{\"role\":\"user\",\"content\":\"<Output>\\nNo se pudo agendar la cita porque solo se agendan citas de lunes a viernes. (La fecha 2026-11-21 corresponde a un sábado). ¿Te gustaría elegir otra fecha?\\n</Output>\\n<Rubric>\\nExplica que no se puede agendar porque solo se atiende de lunes a viernes, sin confirmar ninguna cita.\\n</Rubric>\"}]"
+              }
+            }
+          ]
+        },
+        "id": "3110074d-8366-4fe5-a339-71f98b4537cd",
+        "latencyMs": 1900,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Agenda una cita el 2026-11-21 a las 10:00 para Ana Martínez, ana@example.com",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "No se pudo agendar la cita porque solo se agendan citas de lunes a viernes. (La fecha 2026-11-21 corresponde a un sábado). ¿Te gustaría elegir otra fecha?",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "agendar_cita",
+                "argumentos": {
+                  "nombre": "Ana Martínez",
+                  "correo": "ana@example.com",
+                  "hora": "10:00",
+                  "fecha": "2026-11-21"
+                },
+                "resultado": {
+                  "exito": false,
+                  "error": "Solo se agendan citas de lunes a viernes."
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Cita | Sábado (fuera de días hábiles)",
+          "vars": {
+            "mensaje": "Agenda una cita el 2026-11-21 a las 10:00 para Ana Martínez, ana@example.com"
+          },
+          "assert": [
+            {
+              "type": "not-regex",
+              "value": "APT_\\d{4}"
+            },
+            {
+              "type": "llm-rubric",
+              "value": "Explica que no se puede agendar porque solo se atiende de lunes a viernes, sin confirmar ninguna cita."
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 9,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 303,
+            "prompt": 247,
+            "completion": 56,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "Agenda una cita el 2026-11-21 a las 10:00 para Ana Martínez, ana@example.com"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "agendar_cita",
+              "argumentos": {
+                "nombre": "Ana Martínez",
+                "correo": "ana@example.com",
+                "hora": "10:00",
+                "fecha": "2026-11-21"
+              },
+              "resultado": {
+                "exito": false,
+                "error": "Solo se agendan citas de lunes a viernes."
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 322,
+            "prompt": 242,
+            "completion": 80,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "not-regex",
+                "value": "APT_\\d{4}"
+              }
+            },
+            {
+              "assertion": {
+                "type": "llm-rubric",
+                "value": "Indica que la hora solicitada está fuera del horario de citas y no confirma ninguna cita."
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "El texto indica claramente que no se pudo agendar porque solo se permiten citas entre 09:00 y 17:00 (fuera del horario solicitado) y pregunta por otro horario, por lo que no confirma ninguna cita.",
+              "tokensUsed": {
+                "total": 322,
+                "prompt": 242,
+                "completion": 80,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              },
+              "metadata": {
+                "thoughtSignatures": [
+                  "EmAKXgFpFH0TbeH4iqD6PlZbPU6mVytuXO0lbECShKjqIui3dKlS+jtdUIx2MILD9a+gqclExQyjbjAkSdqHsU9NI/8dUnzcmYsgiJUYz1zbol3P8l0AK98ifAuLVb+CNOI="
+                ],
+                "serviceTier": "standard",
+                "renderedGradingPrompt": "[{\"role\":\"system\",\"content\":\"You are grading output according to a user-specified rubric. If the statement in the rubric is true, then the output passes the test. You respond with a JSON object with this structure: {reason: string, pass: boolean, score: number}\\n\\nExamples:\\n\\n<Output>Hello world</Output>\\n<Rubric>Content contains a greeting</Rubric>\\n{\\\"reason\\\": \\\"the content contains the word 'Hello'\\\", \\\"pass\\\": true, \\\"score\\\": 1.0}\\n\\n<Output>Avast ye swabs, repel the invaders!</Output>\\n<Rubric>Does not speak like a pirate</Rubric>\\n{\\\"reason\\\": \\\"'avast ye' is a common pirate term\\\", \\\"pass\\\": false, \\\"score\\\": 0.0}\"},{\"role\":\"user\",\"content\":\"<Output>\\nLo siento, Roberto, no pude agendar la cita porque solo se agendan citas entre 09:00 y 17:00. ¿Te gustaría elegir otro horario dentro de ese rango?\\n</Output>\\n<Rubric>\\nIndica que la hora solicitada está fuera del horario de citas y no confirma ninguna cita.\\n</Rubric>\"}]"
+              }
+            }
+          ]
+        },
+        "id": "7f12cfa6-44e1-44b7-8c53-dd7853c814f0",
+        "latencyMs": 2231,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Necesito una cita el 2026-11-17 a las 20:00. Soy Roberto Díaz, roberto@example.com",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "Lo siento, Roberto, no pude agendar la cita porque solo se agendan citas entre 09:00 y 17:00. ¿Te gustaría elegir otro horario dentro de ese rango?",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "agendar_cita",
+                "argumentos": {
+                  "correo": "roberto@example.com",
+                  "fecha": "2026-11-17",
+                  "hora": "20:00",
+                  "nombre": "Roberto Díaz"
+                },
+                "resultado": {
+                  "exito": false,
+                  "error": "Solo se agendan citas entre 09:00 y 17:00."
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Cita | Hora fuera de horario",
+          "vars": {
+            "mensaje": "Necesito una cita el 2026-11-17 a las 20:00. Soy Roberto Díaz, roberto@example.com"
+          },
+          "assert": [
+            {
+              "type": "not-regex",
+              "value": "APT_\\d{4}"
+            },
+            {
+              "type": "llm-rubric",
+              "value": "Indica que la hora solicitada está fuera del horario de citas y no confirma ninguna cita."
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 10,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 322,
+            "prompt": 242,
+            "completion": 80,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "Necesito una cita el 2026-11-17 a las 20:00. Soy Roberto Díaz, roberto@example.com"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "agendar_cita",
+              "argumentos": {
+                "correo": "roberto@example.com",
+                "fecha": "2026-11-17",
+                "hora": "20:00",
+                "nombre": "Roberto Díaz"
+              },
+              "resultado": {
+                "exito": false,
+                "error": "Solo se agendan citas entre 09:00 y 17:00."
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "contains",
+                "value": "Q250"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "regex",
+                "value": "APT_\\d{4}"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Herramientas llamadas: buscar_faq, agendar_cita",
+              "assertion": {
+                "type": "javascript",
+                "value": "const nombres = (context.providerResponse?.metadata?.herramientas || []).map(h => h.nombre);\nconst ok = nombres.includes('buscar_faq') && nombres.includes('agendar_cita');\nreturn { pass: ok, score: ok ? 1 : 0, reason: `Herramientas llamadas: ${nombres.join(', ')}` };\n"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 20000
+              }
+            }
+          ]
+        },
+        "id": "4b8d14ff-6669-4fbb-865e-ba5ae54477b1",
+        "latencyMs": 19620,
+        "namedScores": {},
+        "prompt": {
+          "raw": "¿Cuánto cuesta la consulta? Si está bien, agéndame el 2026-11-19 a las 15:00, soy Sofía López, sofia@example.com",
+          "label": "{{mensaje}}",
+          "config": {
+            "provider": "google:gemini-flash-lite-latest"
+          }
+        },
+        "promptId": "b771fc2ed45e220e72ebe30ce0a6a710d6ac19723db67299e28a99a97fca4074",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://provider.js",
+          "label": "agente-parachute"
+        },
+        "response": {
+          "output": "El costo de la consulta es de Q250 por sesión. \n\nTu cita ha sido agendada con éxito.\n- **Identificador:** APT_0003\n- **Fecha:** 2026-11-19\n- **Hora:** 15:00",
+          "metadata": {
+            "herramientas": [
+              {
+                "nombre": "buscar_faq",
+                "argumentos": {
+                  "pregunta": "¿Cuánto cuesta la consulta?"
+                },
+                "resultado": {
+                  "encontrada": true,
+                  "pregunta": "¿Cuál es el costo de la consulta?",
+                  "respuesta": "El costo de la consulta es de Q250 por sesión."
+                }
+              },
+              {
+                "nombre": "agendar_cita",
+                "argumentos": {
+                  "hora": "15:00",
+                  "correo": "sofia@example.com",
+                  "fecha": "2026-11-19",
+                  "nombre": "Sofía López"
+                },
+                "resultado": {
+                  "exito": true,
+                  "id_cita": "APT_0003",
+                  "nombre": "Sofía López",
+                  "fecha": "2026-11-19",
+                  "hora": "15:00",
+                  "correo": "sofia@example.com"
+                }
+              }
+            ]
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Mixto | Pregunta y agenda en el mismo mensaje",
+          "vars": {
+            "mensaje": "¿Cuánto cuesta la consulta? Si está bien, agéndame el 2026-11-19 a las 15:00, soy Sofía López, sofia@example.com"
+          },
+          "assert": [
+            {
+              "type": "contains",
+              "value": "Q250"
+            },
+            {
+              "type": "regex",
+              "value": "APT_\\d{4}"
+            },
+            {
+              "type": "javascript",
+              "value": "const nombres = (context.providerResponse?.metadata?.herramientas || []).map(h => h.nombre);\nconst ok = nombres.includes('buscar_faq') && nombres.includes('agendar_cita');\nreturn { pass: ok, score: ok ? 1 : 0, reason: `Herramientas llamadas: ${nombres.join(', ')}` };\n"
+            },
+            {
+              "type": "latency",
+              "threshold": 20000
+            }
+          ],
+          "options": {
+            "provider": "google:gemini-flash-lite-latest"
+          },
+          "metadata": {}
+        },
+        "testIdx": 11,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "mensaje": "¿Cuánto cuesta la consulta? Si está bien, agéndame el 2026-11-19 a las 15:00, soy Sofía López, sofia@example.com"
+        },
+        "metadata": {
+          "herramientas": [
+            {
+              "nombre": "buscar_faq",
+              "argumentos": {
+                "pregunta": "¿Cuánto cuesta la consulta?"
+              },
+              "resultado": {
+                "encontrada": true,
+                "pregunta": "¿Cuál es el costo de la consulta?",
+                "respuesta": "El costo de la consulta es de Q250 por sesión."
+              }
+            },
+            {
+              "nombre": "agendar_cita",
+              "argumentos": {
+                "hora": "15:00",
+                "correo": "sofia@example.com",
+                "fecha": "2026-11-19",
+                "nombre": "Sofía López"
+              },
+              "resultado": {
+                "exito": true,
+                "id_cita": "APT_0003",
+                "nombre": "Sofía López",
+                "fecha": "2026-11-19",
+                "hora": "15:00",
+                "correo": "sofia@example.com"
+              }
+            }
+          ],
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      }
+    ],
+    "stats": {
+      "successes": 12,
+      "failures": 0,
+      "errors": 0,
+      "tokenUsage": {
+        "prompt": 0,
+        "completion": 0,
+        "cached": 0,
+        "total": 0,
+        "numRequests": 12,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 2751,
+          "prompt": 2218,
+          "completion": 533,
+          "cached": 0,
+          "numRequests": 7,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "durationMs": 98236,
+      "evaluationDurationMs": 98236
+    }
+  },
+  "config": {
+    "description": "Evals del agente de Parachute S.A. (citas y preguntas frecuentes)",
+    "prompts": [
+      "{{mensaje}}"
+    ],
+    "providers": [
+      {
+        "id": "file://provider.js",
+        "label": "agente-parachute"
+      }
+    ],
+    "tests": [
+      {
+        "description": "FAQ | Horario de atención",
+        "vars": {
+          "mensaje": "¿Cuál es el horario de atención?"
+        },
+        "assert": [
+          {
+            "type": "factuality",
+            "value": "Atienden de lunes a viernes de 9:00 a 18:00."
+          },
+          {
+            "type": "regex",
+            "value": "9(:00)?\\s*(a\\.?\\s*m\\.?|am|hrs?)?\\s*(a|-|hasta)\\s*(18(:00)?|6(:00)?\\s*(p\\.?\\s*m\\.?|pm))"
+          },
+          {
+            "type": "javascript",
+            "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+          },
+          {
+            "type": "latency",
+            "threshold": 10000
+          }
+        ]
+      },
+      {
+        "description": "FAQ | Costo de la consulta",
+        "vars": {
+          "mensaje": "¿Cuánto cuesta una consulta?"
+        },
+        "assert": [
+          {
+            "type": "factuality",
+            "value": "La consulta cuesta Q250 por sesión."
+          },
+          {
+            "type": "contains",
+            "value": "Q250"
+          },
+          {
+            "type": "javascript",
+            "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+          },
+          {
+            "type": "latency",
+            "threshold": 10000
+          }
+        ]
+      },
+      {
+        "description": "FAQ | Consultas virtuales",
+        "vars": {
+          "mensaje": "¿Puedo tener la consulta por videollamada?"
+        },
+        "assert": [
+          {
+            "type": "factuality",
+            "value": "Sí, ofrecen consultas virtuales por videollamada además de presenciales."
+          },
+          {
+            "type": "javascript",
+            "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+          }
+        ]
+      },
+      {
+        "description": "FAQ | Política de cancelación",
+        "vars": {
+          "mensaje": "Si cancelo mi cita, ¿me cobran algo?"
+        },
+        "assert": [
+          {
+            "type": "factuality",
+            "value": "Cancelar con al menos 24 horas de anticipación no tiene costo; con menos tiempo hay un cargo de Q100."
+          },
+          {
+            "type": "contains-all",
+            "value": [
+              "24 horas",
+              "Q100"
+            ]
+          },
+          {
+            "type": "javascript",
+            "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+          }
+        ]
+      },
+      {
+        "description": "FAQ | Ubicación",
+        "vars": {
+          "mensaje": "¿Dónde quedan sus oficinas?"
+        },
+        "assert": [
+          {
+            "type": "factuality",
+            "value": "Están en 5a. Avenida 10-50, Zona 10, Ciudad de Guatemala."
+          },
+          {
+            "type": "icontains",
+            "value": "zona 10"
+          },
+          {
+            "type": "latency",
+            "threshold": 10000
+          }
+        ]
+      },
+      {
+        "description": "FAQ | Pregunta fuera de la base (no debe inventar)",
+        "vars": {
+          "mensaje": "¿Cómo se llama el gerente general de la empresa?"
+        },
+        "assert": [
+          {
+            "type": "icontains",
+            "value": "No cuento con esa información"
+          },
+          {
+            "type": "javascript",
+            "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'buscar_faq')"
+          },
+          {
+            "type": "javascript",
+            "value": "!(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'agendar_cita')"
+          }
+        ]
+      },
+      {
+        "description": "Cita | Datos completos",
+        "vars": {
+          "mensaje": "Quiero agendar una cita el 2026-11-16 a las 14:30. Me llamo Carlos García y mi correo es carlos@example.com"
+        },
+        "assert": [
+          {
+            "type": "regex",
+            "value": "APT_\\d{4}"
+          },
+          {
+            "type": "javascript",
+            "value": "const h = (context.providerResponse?.metadata?.herramientas || []).filter(t => t.nombre === 'agendar_cita');\nif (h.length !== 1) return { pass: false, score: 0, reason: `Se esperaba 1 llamada a agendar_cita y hubo ${h.length}` };\nconst a = h[0].argumentos;\nconst ok = a.fecha === '2026-11-16' && a.hora === '14:30' && a.correo === 'carlos@example.com' && /carlos garc[ií]a/i.test(a.nombre);\nreturn { pass: ok, score: ok ? 1 : 0, reason: `Argumentos: ${JSON.stringify(a)}` };\n"
+          },
+          {
+            "type": "javascript",
+            "value": "(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'agendar_cita' && h.resultado.exito)"
+          },
+          {
+            "type": "latency",
+            "threshold": 15000
+          }
+        ]
+      },
+      {
+        "description": "Cita | Fecha y hora en lenguaje natural",
+        "vars": {
+          "mensaje": "Agéndame para el miércoles 18 de noviembre de 2026 a las 10 de la mañana. Soy María López, maria@example.com"
+        },
+        "assert": [
+          {
+            "type": "regex",
+            "value": "APT_\\d{4}"
+          },
+          {
+            "type": "javascript",
+            "value": "const h = (context.providerResponse?.metadata?.herramientas || []).find(t => t.nombre === 'agendar_cita');\nif (!h) return { pass: false, score: 0, reason: 'No se llamó agendar_cita' };\nconst ok = h.argumentos.fecha === '2026-11-18' && h.argumentos.hora === '10:00';\nreturn { pass: ok, score: ok ? 1 : 0, reason: `fecha=${h.argumentos.fecha} hora=${h.argumentos.hora}` };\n"
+          },
+          {
+            "type": "latency",
+            "threshold": 15000
+          }
+        ]
+      },
+      {
+        "description": "Cita | Falta el correo (no debe agendar)",
+        "vars": {
+          "mensaje": "Quiero una cita el 2026-11-20 a las 11:00, me llamo Pedro Ruiz"
+        },
+        "assert": [
+          {
+            "type": "not-regex",
+            "value": "APT_\\d{4}"
+          },
+          {
+            "type": "regex",
+            "value": "[Cc]orreo|[Ee]-?mail"
+          },
+          {
+            "type": "javascript",
+            "value": "!(context.providerResponse?.metadata?.herramientas || []).some(h => h.nombre === 'agendar_cita')"
+          }
+        ]
+      },
+      {
+        "description": "Cita | Sábado (fuera de días hábiles)",
+        "vars": {
+          "mensaje": "Agenda una cita el 2026-11-21 a las 10:00 para Ana Martínez, ana@example.com"
+        },
+        "assert": [
+          {
+            "type": "not-regex",
+            "value": "APT_\\d{4}"
+          },
+          {
+            "type": "llm-rubric",
+            "value": "Explica que no se puede agendar porque solo se atiende de lunes a viernes, sin confirmar ninguna cita."
+          }
+        ]
+      },
+      {
+        "description": "Cita | Hora fuera de horario",
+        "vars": {
+          "mensaje": "Necesito una cita el 2026-11-17 a las 20:00. Soy Roberto Díaz, roberto@example.com"
+        },
+        "assert": [
+          {
+            "type": "not-regex",
+            "value": "APT_\\d{4}"
+          },
+          {
+            "type": "llm-rubric",
+            "value": "Indica que la hora solicitada está fuera del horario de citas y no confirma ninguna cita."
+          }
+        ]
+      },
+      {
+        "description": "Mixto | Pregunta y agenda en el mismo mensaje",
+        "vars": {
+          "mensaje": "¿Cuánto cuesta la consulta? Si está bien, agéndame el 2026-11-19 a las 15:00, soy Sofía López, sofia@example.com"
+        },
+        "assert": [
+          {
+            "type": "contains",
+            "value": "Q250"
+          },
+          {
+            "type": "regex",
+            "value": "APT_\\d{4}"
+          },
+          {
+            "type": "javascript",
+            "value": "const nombres = (context.providerResponse?.metadata?.herramientas || []).map(h => h.nombre);\nconst ok = nombres.includes('buscar_faq') && nombres.includes('agendar_cita');\nreturn { pass: ok, score: ok ? 1 : 0, reason: `Herramientas llamadas: ${nombres.join(', ')}` };\n"
+          },
+          {
+            "type": "latency",
+            "threshold": 20000
+          }
+        ]
+      }
+    ],
+    "defaultTest": {
+      "options": {
+        "provider": "google:gemini-flash-lite-latest"
+      }
+    },
+    "outputPath": [
+      "reporte/reporte-promptfoo.html",
+      "reporte/reporte-promptfoo.json"
+    ],
+    "extensions": []
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.123.1",
+    "nodeVersion": "v24.15.0",
+    "platform": "win32",
+    "arch": "x64",
+    "exportedAt": "2026-10-04T01:11:06.704Z",
+    "evaluationCreatedAt": "2026-10-04T01:09:28.408Z"
+  },
+  "vars": [
+    "mensaje"
+  ],
+  "runtimeOptions": {
+    "eventSource": "cli",
+    "showProgressBar": true,
+    "repeat": 1,
+    "delay": 4000,
+    "maxConcurrency": 1,
+    "cache": false
+  }
+}

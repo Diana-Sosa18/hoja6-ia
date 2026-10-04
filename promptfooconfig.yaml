@@ -10,7 +10,7 @@ providers:
 
 defaultTest:
   options:
-    provider: anthropic:messages:claude-sonnet-5-5
+    provider: google:gemini-flash-lite-latest
 
 tests:
   # ---------- Preguntas frecuentes ----------

@@ -9,7 +9,7 @@ Evals con [promptfoo](https://www.promptfoo.dev/) para el agente de Parachute S.
 
 | Archivo | Contenido |
 | --- | --- |
-| `agent.js` | Agente con Claude y uso de herramientas. Devuelve la respuesta y el registro de herramientas llamadas. |
+| `agent.js` | Agente con Gemini (`gemini-3.5-flash-lite`) y uso de herramientas. Devuelve la respuesta y el registro de herramientas llamadas. |
 | `provider.js` | Provider personalizado de promptfoo que ejecuta el agente y expone las herramientas en `metadata`. |
 | `promptfooconfig.yaml` | Casos de prueba y aserciones. |
 | `reporte/` | Reporte generado por promptfoo (HTML y JSON). |
@@ -29,7 +29,7 @@ Los casos cubren preguntas frecuentes, una pregunta fuera de la base, citas con 
 
 ```bash
 npm install
-cp .env.example .env   # agregar ANTHROPIC_API_KEY
+cp .env.example .env   # agregar GOOGLE_API_KEY (gratis en Google AI Studio)
 npm run eval           # genera reporte/reporte-promptfoo.html y .json
 npm run view           # abre el visor web de promptfoo
 ```
