@@ -1,143 +1,41 @@
-# Hoja de Trabajo #5 y #6 - Agente de Servicio al Cliente con Evals
+# Hoja de Trabajo 6 - Evals
 
-## Descripción
+Evals con [promptfoo](https://www.promptfoo.dev/) para el agente de Parachute S.A. desarrollado en la hoja de trabajo 5. El agente cumple dos funciones:
 
-Agente inteligente de servicio al cliente en JavaScript que:
-- **Funcionalidad 1:** Agenda citas con clientes
-- **Funcionalidad 2:** Responde preguntas frecuentes (FAQs)
+- **Agendar citas** (`agendar_cita`, `consultar_cita`)
+- **Responder preguntas frecuentes** (`buscar_faq`)
 
-Evaluado usando **promptfoo** con múltiples tipos de pruebas:
-- ✅ Factuality (Factualidad)
-- ✅ Determinísticas (contains/regex)
-- ✅ Latencia
-- ✅ Tool execution (Verificación de llamadas a herramientas)
+## Estructura
 
-## Requisitos
+| Archivo | Contenido |
+| --- | --- |
+| `agent.js` | Agente con Claude y uso de herramientas. Devuelve la respuesta y el registro de herramientas llamadas. |
+| `provider.js` | Provider personalizado de promptfoo que ejecuta el agente y expone las herramientas en `metadata`. |
+| `promptfooconfig.yaml` | Casos de prueba y aserciones. |
+| `reporte/` | Reporte generado por promptfoo (HTML y JSON). |
 
-- Node.js 16+
-- API Key de Anthropic
+## Tipos de evals
 
-## Instalación
+| Tipo | Aserción de promptfoo | Qué valida |
+| --- | --- | --- |
+| Factuality | `factuality`, `llm-rubric` | La respuesta coincide con la información oficial y no inventa datos. |
+| Determinísticos | `contains`, `icontains`, `contains-all`, `regex`, `not-regex` | Datos clave (Q250, Zona 10, 24 horas), formato del ID `APT_0000` y ausencia de confirmaciones indebidas. |
+| Latencia | `latency` | Tiempo máximo de respuesta por caso (10 a 20 segundos). |
+| Tool execution | `javascript` | Herramienta correcta, argumentos normalizados (fecha `YYYY-MM-DD`, hora `HH:MM`) y que no se agende sin datos completos. |
+
+Los casos cubren preguntas frecuentes, una pregunta fuera de la base, citas con datos completos, fechas en lenguaje natural, datos faltantes, días no hábiles, horas fuera de horario y un mensaje que combina pregunta y cita.
+
+## Ejecución
 
 ```bash
 npm install
-npm install -g promptfoo
+cp .env.example .env   # agregar ANTHROPIC_API_KEY
+npm run eval           # genera reporte/reporte-promptfoo.html y .json
+npm run view           # abre el visor web de promptfoo
 ```
 
-## Configuración
+Para probar el agente manualmente:
 
-1. Crea un archivo `.env` con tu API key:
 ```bash
-cp .env.example .env
-# Edita .env y agrega tu ANTHROPIC_API_KEY
+npm run agente -- "¿Cuál es el horario de atención?"
 ```
-
-## Uso
-
-### Ejecutar el agente directamente:
-```bash
-npm start
-```
-
-### Ejecutar evals con promptfoo:
-```bash
-npm test
-```
-
-### Ver reporte web:
-```bash
-npm run view
-```
-
-## Estructura del Proyecto
-
-```
-.
-├── agent.js                 # Agente principal con herramientas
-├── agent-wrapper.js        # Wrapper para promptfoo
-├── promptfooconfig.yaml    # Configuración de evals
-├── package.json            # Dependencias Node.js
-├── .env.example            # Template de variables de entorno
-├── .gitignore              # Archivos a ignorar
-└── README.md               # Este archivo
-```
-
-## Herramientas del Agente
-
-### schedule_appointment
-Agenda una nueva cita con los siguientes parámetros:
-- `name`: Nombre del cliente
-- `date`: Fecha (YYYY-MM-DD)
-- `time`: Hora (HH:MM)
-- `email`: Email del cliente
-
-### answer_faq
-Responde preguntas frecuentes del cliente
-- `question`: La pregunta a responder
-
-### get_appointment
-Obtiene detalles de una cita existente
-- `appointment_id`: ID de la cita
-
-### list_appointments
-Lista todas las citas agendadas
-
-### get_all_faqs
-Obtiene la lista completa de FAQs
-
-## Pruebas Implementadas
-
-### Factuality (Factualidad)
-- Verifica que las respuestas de FAQs contengan información correcta
-- Valida datos específicos como horarios, precios, políticas
-
-### Determinísticas
-- **Contains:** Verifica que la respuesta contenga palabras clave
-- **Regex:** Verifica patrones (ej: ID de cita APT_XXXX)
-
-### Latencia
-- Verifica que las respuestas se procesen en menos de 5 segundos
-- Aplica a FAQs y agendamiento de citas
-
-### Tool Execution
-- Verifica que se usen las herramientas correctas
-- Valida que el agente use `answer_faq` para preguntas
-- Valida que el agente use `schedule_appointment` para agendar citas
-
-## Ejemplos de Uso
-
-```javascript
-import { runAgent } from './agent.js';
-
-// Ejemplo 1: Responder FAQ
-const response1 = await runAgent("¿Cuál es el horario de atención?");
-
-// Ejemplo 2: Agendar cita
-const response2 = await runAgent(
-  "Quiero agendar una cita para el 2024-10-15 a las 14:30, " +
-  "mi nombre es Juan Pérez y mi email es juan@example.com"
-);
-
-// Ejemplo 3: Multi-turn
-const response3 = await runAgent(
-  "Primero ¿cuál es el costo? Después quiero agendar para el 2024-11-01 a las 10:00, " +
-  "soy María García, maria@example.com"
-);
-```
-
-## Resultados Esperados
-
-Al ejecutar `npm test`, espera ver:
-
-- ✅ Respuestas de FAQs que contengan información correcta
-- ✅ Citas agendadas exitosamente con ID único
-- ✅ Latencia menor a 5 segundos por solicitud
-- ✅ Uso correcto de herramientas según el tipo de solicitud
-- ✅ Manejo apropiado de preguntas no disponibles
-
-## Notas
-
-- El agente usa Claude 3.5 Sonnet como modelo base
-- Las citas se almacenan en memoria (no se persisten entre ejecuciones)
-- El agente mantiene contexto dentro de una conversación
-- Desarrollado como módulo ES6 (import/export)

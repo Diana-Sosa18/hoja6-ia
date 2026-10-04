@@ -1,283 +1,210 @@
 import Anthropic from "@anthropic-ai/sdk";
 import dotenv from "dotenv";
+import { pathToFileURL } from "node:url";
 
 dotenv.config();
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const MODEL = process.env.AGENT_MODEL || "claude-haiku-4-5-20251001";
 
-// Base de datos simulada para citas
-const appointments = {};
+const client = new Anthropic();
 
-// Base de datos de FAQs
-const faqs = {
-  "¿Cuál es el horario de atención?":
-    "Atendemos de lunes a viernes de 9:00 AM a 6:00 PM",
-  "¿Cómo agendar una cita?":
-    "Puede agendar una cita proporcionando su nombre, fecha y hora deseada",
-  "¿Cuál es el costo de la consulta?": "El costo de la consulta es de Q250 por sesión",
-  "¿Se ofrecen consultas virtuales?":
-    "Sí, ofrecemos tanto consultas presenciales como virtuales",
-  "¿Cuál es la política de cancelación?":
-    "Se pueden cancelar citas con 24 horas de anticipación sin penalización",
+const citas = {};
+
+const faqs = [
+  {
+    pregunta: "¿Cuál es el horario de atención?",
+    respuesta: "Atendemos de lunes a viernes de 9:00 a 18:00.",
+  },
+  {
+    pregunta: "¿Cuál es el costo de la consulta?",
+    respuesta: "El costo de la consulta es de Q250 por sesión.",
+  },
+  {
+    pregunta: "¿Ofrecen consultas virtuales?",
+    respuesta: "Sí, ofrecemos consultas presenciales y virtuales por videollamada.",
+  },
+  {
+    pregunta: "¿Cuál es la política de cancelación?",
+    respuesta:
+      "Las citas se pueden cancelar sin costo con al menos 24 horas de anticipación. Cancelaciones con menos tiempo tienen un cargo de Q100.",
+  },
+  {
+    pregunta: "¿Dónde están ubicados?",
+    respuesta: "Estamos en 5a. Avenida 10-50, Zona 10, Ciudad de Guatemala.",
+  },
+  {
+    pregunta: "¿Qué formas de pago aceptan?",
+    respuesta: "Aceptamos efectivo, tarjeta de crédito o débito y transferencia bancaria.",
+  },
+];
+
+const STOPWORDS = new Set([
+  "cual", "como", "donde", "cuando", "que", "para", "por", "con", "una", "las", "los",
+  "del", "ustedes", "tienen", "hay", "son", "esta", "este", "sus", "nos",
+]);
+
+function normalizar(texto) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9ñ\s]/g, " ")
+    .split(/\s+/)
+    .filter((p) => p.length > 2 && !STOPWORDS.has(p));
+}
+
+function buscarFaq({ pregunta }) {
+  const palabras = new Set(normalizar(pregunta));
+  let mejor = null;
+  let mejorPuntaje = 0;
+  for (const faq of faqs) {
+    const puntaje = normalizar(`${faq.pregunta} ${faq.respuesta}`).filter((p) =>
+      palabras.has(p)
+    ).length;
+    if (puntaje > mejorPuntaje) {
+      mejor = faq;
+      mejorPuntaje = puntaje;
+    }
+  }
+  if (!mejor) {
+    return { encontrada: false, mensaje: "La pregunta no está en la base de preguntas frecuentes." };
+  }
+  return { encontrada: true, ...mejor };
+}
+
+function agendarCita({ nombre, fecha, hora, correo }) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+    return { exito: false, error: "La fecha debe tener formato YYYY-MM-DD." };
+  }
+  if (!/^\d{2}:\d{2}$/.test(hora)) {
+    return { exito: false, error: "La hora debe tener formato HH:MM." };
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+    return { exito: false, error: "El correo electrónico no es válido." };
+  }
+  const dia = new Date(`${fecha}T12:00:00Z`).getUTCDay();
+  if (dia === 0 || dia === 6) {
+    return { exito: false, error: "Solo se agendan citas de lunes a viernes." };
+  }
+  if (hora < "09:00" || hora > "17:00") {
+    return { exito: false, error: "Solo se agendan citas entre 09:00 y 17:00." };
+  }
+  const ocupada = Object.values(citas).some((c) => c.fecha === fecha && c.hora === hora);
+  if (ocupada) {
+    return { exito: false, error: "Ese horario ya está ocupado." };
+  }
+  const id = `APT_${String(Object.keys(citas).length + 1).padStart(4, "0")}`;
+  citas[id] = { nombre, fecha, hora, correo };
+  return { exito: true, id_cita: id, ...citas[id] };
+}
+
+function consultarCita({ id_cita }) {
+  const cita = citas[id_cita];
+  return cita ? { exito: true, id_cita, ...cita } : { exito: false, error: `No existe la cita ${id_cita}.` };
+}
+
+const implementaciones = {
+  buscar_faq: buscarFaq,
+  agendar_cita: agendarCita,
+  consultar_cita: consultarCita,
 };
 
-// Herramientas disponibles
 const tools = [
   {
-    name: "schedule_appointment",
-    description: "Agenda una nueva cita con los detalles del cliente",
-    input_schema: {
-      type: "object",
-      properties: {
-        name: {
-          type: "string",
-          description: "Nombre completo del cliente",
-        },
-        date: {
-          type: "string",
-          description: "Fecha de la cita (formato: YYYY-MM-DD)",
-        },
-        time: {
-          type: "string",
-          description: "Hora de la cita (formato: HH:MM)",
-        },
-        email: {
-          type: "string",
-          description: "Email del cliente",
-        },
-      },
-      required: ["name", "date", "time", "email"],
-    },
-  },
-  {
-    name: "get_appointment",
-    description: "Obtiene los detalles de una cita existente",
-    input_schema: {
-      type: "object",
-      properties: {
-        appointment_id: {
-          type: "string",
-          description: "ID de la cita (ej: APT_0001)",
-        },
-      },
-      required: ["appointment_id"],
-    },
-  },
-  {
-    name: "list_appointments",
-    description: "Lista todas las citas agendadas",
-    input_schema: {
-      type: "object",
-      properties: {},
-    },
-  },
-  {
-    name: "answer_faq",
-    description: "Responde preguntas frecuentes de los clientes",
-    input_schema: {
-      type: "object",
-      properties: {
-        question: {
-          type: "string",
-          description: "La pregunta del cliente",
-        },
-      },
-      required: ["question"],
-    },
-  },
-  {
-    name: "get_all_faqs",
+    name: "buscar_faq",
     description:
-      "Obtiene la lista completa de preguntas frecuentes y sus respuestas",
+      "Busca la respuesta oficial a una pregunta frecuente (horario, costo, consultas virtuales, cancelación, ubicación, formas de pago).",
     input_schema: {
       type: "object",
-      properties: {},
+      properties: {
+        pregunta: { type: "string", description: "Pregunta del cliente" },
+      },
+      required: ["pregunta"],
+    },
+  },
+  {
+    name: "agendar_cita",
+    description: "Agenda una cita. Solo se llama cuando se tienen nombre, fecha, hora y correo.",
+    input_schema: {
+      type: "object",
+      properties: {
+        nombre: { type: "string", description: "Nombre completo del cliente" },
+        fecha: { type: "string", description: "Fecha en formato YYYY-MM-DD" },
+        hora: { type: "string", description: "Hora en formato HH:MM de 24 horas" },
+        correo: { type: "string", description: "Correo electrónico del cliente" },
+      },
+      required: ["nombre", "fecha", "hora", "correo"],
+    },
+  },
+  {
+    name: "consultar_cita",
+    description: "Consulta los datos de una cita existente por su identificador.",
+    input_schema: {
+      type: "object",
+      properties: {
+        id_cita: { type: "string", description: "Identificador de la cita, por ejemplo APT_0001" },
+      },
+      required: ["id_cita"],
     },
   },
 ];
 
-// Implementación de herramientas
-function scheduleAppointment(name, date, time, email) {
-  try {
-    const appointmentId = `APT_${String(Object.keys(appointments).length + 1).padStart(4, "0")}`;
-    appointments[appointmentId] = {
-      name,
-      date,
-      time,
-      email,
-      created_at: new Date().toISOString(),
-    };
-    return {
-      success: true,
-      message: "Cita agendada exitosamente",
-      appointment_id: appointmentId,
-      details: appointments[appointmentId],
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error.message,
-    };
-  }
-}
+const SYSTEM_PROMPT = `Eres el asistente virtual de Parachute S.A. Respondes siempre en español.
+Tienes dos funciones: agendar citas y responder preguntas frecuentes.
 
-function getAppointment(appointmentId) {
-  if (appointments[appointmentId]) {
-    return {
-      success: true,
-      appointment: appointments[appointmentId],
-    };
-  }
-  return {
-    success: false,
-    error: `Cita ${appointmentId} no encontrada`,
-  };
-}
+Preguntas frecuentes:
+- Usa siempre la herramienta buscar_faq antes de responder. Responde solo con la información que devuelve.
+- Si la herramienta no encuentra la respuesta, di exactamente: "No cuento con esa información." y ofrece ayuda para agendar una cita.
 
-function listAppointments() {
-  return {
-    success: true,
-    total: Object.keys(appointments).length,
-    appointments,
-  };
-}
+Citas:
+- Para agendar necesitas nombre, fecha, hora y correo. Si falta alguno, pídelo y no llames agendar_cita.
+- Convierte fechas a YYYY-MM-DD y horas a HH:MM (24 horas). Si el cliente no indica el año, usa 2026.
+- Al confirmar una cita, incluye el identificador (por ejemplo APT_0001), la fecha y la hora.
+- Si la herramienta devuelve un error, explica el motivo al cliente.`;
 
-function answerFaq(question) {
-  for (const [faqQ, faqA] of Object.entries(faqs)) {
-    if (
-      question.toLowerCase().includes(faqQ.toLowerCase()) ||
-      faqQ.toLowerCase().includes(question.toLowerCase())
-    ) {
-      return {
-        success: true,
-        question: faqQ,
-        answer: faqA,
-      };
-    }
-  }
-  return {
-    success: false,
-    error: "Pregunta no encontrada en la base de datos de FAQs",
-  };
-}
+export async function runAgent(mensaje) {
+  const messages = [{ role: "user", content: mensaje }];
+  const herramientas = [];
 
-function getAllFaqs() {
-  return {
-    success: true,
-    faqs,
-  };
-}
-
-// Procesar llamadas a herramientas
-function processToolCall(toolName, toolInput) {
-  switch (toolName) {
-    case "schedule_appointment":
-      return scheduleAppointment(
-        toolInput.name,
-        toolInput.date,
-        toolInput.time,
-        toolInput.email
-      );
-    case "get_appointment":
-      return getAppointment(toolInput.appointment_id);
-    case "list_appointments":
-      return listAppointments();
-    case "answer_faq":
-      return answerFaq(toolInput.question);
-    case "get_all_faqs":
-      return getAllFaqs();
-    default:
-      return { error: `Tool ${toolName} not found` };
-  }
-}
-
-// Ejecutar el agente
-async function runAgent(userMessage) {
-  const systemPrompt = `Eres un asistente de servicio al cliente amable y eficiente.
-Ayudas a los clientes a agendar citas y responder sus preguntas frecuentes.
-Cuando un cliente quiera agendar una cita, extrae la información necesaria y usa la herramienta schedule_appointment.
-Cuando tenga preguntas, usa la herramienta answer_faq para responder.
-Sé amable, profesional y conciso en tus respuestas.`;
-
-  const messages = [
-    {
-      role: "user",
-      content: userMessage,
-    },
-  ];
-
-  while (true) {
+  for (let turno = 0; turno < 6; turno++) {
     const response = await client.messages.create({
-      model: "claude-3-5-sonnet-20241022",
+      model: MODEL,
       max_tokens: 1024,
-      system: systemPrompt,
+      system: SYSTEM_PROMPT,
       tools,
       messages,
     });
 
-    // Si no hay tool use, retorna la respuesta final
-    if (response.stop_reason === "end_turn") {
-      const finalResponse = response.content
-        .filter((block) => block.type === "text")
-        .map((block) => block.text)
-        .join("");
-      return finalResponse;
+    if (response.stop_reason !== "tool_use") {
+      const respuesta = response.content
+        .filter((b) => b.type === "text")
+        .map((b) => b.text)
+        .join("\n");
+      return { respuesta, herramientas };
     }
 
-    // Procesa tool calls
-    if (response.stop_reason === "tool_use") {
-      // Agrega la respuesta del asistente
-      messages.push({
-        role: "assistant",
-        content: response.content,
+    messages.push({ role: "assistant", content: response.content });
+    const resultados = [];
+    for (const bloque of response.content) {
+      if (bloque.type !== "tool_use") continue;
+      const fn = implementaciones[bloque.name];
+      const resultado = fn ? fn(bloque.input) : { error: `Herramienta desconocida: ${bloque.name}` };
+      herramientas.push({ nombre: bloque.name, argumentos: bloque.input, resultado });
+      resultados.push({
+        type: "tool_result",
+        tool_use_id: bloque.id,
+        content: JSON.stringify(resultado),
       });
-
-      // Procesa cada tool call
-      const toolResults = [];
-      for (const block of response.content) {
-        if (block.type === "tool_use") {
-          const toolResult = processToolCall(block.name, block.input);
-          toolResults.push({
-            type: "tool_result",
-            tool_use_id: block.id,
-            content: JSON.stringify(toolResult),
-          });
-        }
-      }
-
-      // Agrega los resultados de las herramientas
-      messages.push({
-        role: "user",
-        content: toolResults,
-      });
-    } else {
-      break;
     }
+    messages.push({ role: "user", content: resultados });
   }
 
-  return "No se pudo procesar la solicitud";
+  return { respuesta: "No se pudo completar la solicitud.", herramientas };
 }
 
-// Exportar para uso en promptfoo
-export { runAgent };
-
-// Prueba directa
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const testMessages = [
-    "¿Cuál es el horario de atención?",
-    "Quiero agendar una cita para el 2024-10-15 a las 14:30, mi nombre es Juan Pérez y mi email es juan@example.com",
-    "¿Cuál es la política de cancelación?",
-  ];
-
-  for (const msg of testMessages) {
-    console.log(`\nUsuario: ${msg}`);
-    try {
-      const response = await runAgent(msg);
-      console.log(`Agente: ${response}`);
-    } catch (error) {
-      console.error("Error:", error.message);
-    }
-  }
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const mensaje = process.argv.slice(2).join(" ") || "¿Cuál es el horario de atención?";
+  const { respuesta, herramientas } = await runAgent(mensaje);
+  console.log(respuesta);
+  console.log("\nHerramientas:", JSON.stringify(herramientas, null, 2));
 }

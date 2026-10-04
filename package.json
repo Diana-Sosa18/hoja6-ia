@@ -1,29 +1,20 @@
 {
   "name": "hoja6-ia-agente",
   "version": "1.0.0",
-  "description": "Agente de servicio al cliente con evals usando promptfoo",
-  "main": "agent.js",
+  "description": "Evals con promptfoo para el agente de citas y preguntas frecuentes",
   "type": "module",
+  "main": "agent.js",
   "scripts": {
-    "start": "node agent.js",
-    "test": "node run-evals.js",
-    "eval-promptfoo": "promptfoo eval -c promptfooconfig.yaml",
+    "agente": "node agent.js",
+    "eval": "promptfoo eval --no-cache -o reporte/reporte-promptfoo.html -o reporte/reporte-promptfoo.json",
     "view": "promptfoo view"
   },
-  "keywords": [
-    "ia",
-    "agente",
-    "anthropic",
-    "promptfoo",
-    "evals"
-  ],
-  "author": "Diana",
   "license": "MIT",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.28.0",
-    "dotenv": "^16.3.1"
+    "@anthropic-ai/sdk": "^0.131.0",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
-    "promptfoo": "^0.77.0"
+    "promptfoo": "^0.123.1"
   }
 }
